@@ -2,7 +2,7 @@
 O intuito desse projeto é estudar #golang, documentei passo a passo do meu aprendizado aqui.
 
 # Aprendendo #golang
-## dia 6
+## Dia 6
 Seguindo o tutorial em https://quii.gitbook.io/learn-go-with-tests/go-fundamentals/arrays-and-slices li novamente sobre slices e arrays e fiz alguns exercícios.
 
 Após isso fui para o guia https://quii.gitbook.io/learn-go-with-tests/go-fundamentals/structs-methods-and-interfaces. Como trabalho com java a muitos anos, estava ansioso por entender como #golang trabalha com programação orientada a objetos. E aprendi que #golang não suporta exatamente orientação objetos, não é possível ter classes, construtores, sobrecarregar funções ou métodos e não existe herança, mas existe um conceito interessante de Interface implicita: https://link.medium.com/MBcAoWrESgb
