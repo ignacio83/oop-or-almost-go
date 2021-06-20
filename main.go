@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ignacio83/oop-or-almost-go/ui"
 	"log"
+	"os"
 )
 
 const logPrefix = "oop-or-almost: "
@@ -14,7 +15,8 @@ func init() {
 }
 
 func main() {
-	shape, err := ui.BuildShapeFromUserInputs()
+	shapeFromUserInputFactory := ui.ShapeFromUserInputFactory{Writer: os.Stdout, Reader: os.Stdin}
+	shape, err := shapeFromUserInputFactory.Build()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"ignacio83/oop-or-almost-go/geometry"
-	"os"
+	"io"
 	"strconv"
 )
 
@@ -17,9 +17,14 @@ var builderByFirstLetter = map[string]ShapeFromScannerBuilder{
 	"T": TriangleFromScannerBuilder{},
 }
 
-func BuildShapeFromUserInputs() (geometry.Shape, error) {
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Print(chooseShapeMessage)
+type ShapeFromUserInputFactory struct {
+	Writer io.Writer
+	Reader io.Reader
+}
+
+func (s *ShapeFromUserInputFactory) Build() (geometry.Shape, error) {
+	fmt.Fprintf(s.Writer, chooseShapeMessage)
+	scanner := bufio.NewScanner(s.Reader)
 	scanner.Scan()
 	shapeInput := scanner.Text()
 
@@ -30,11 +35,11 @@ func BuildShapeFromUserInputs() (geometry.Shape, error) {
 	if builder == nil {
 		return nil, errors.New("invalid shape")
 	}
-	return builder.build(scanner)
+	return builder.build(s.Writer, scanner)
 }
 
-func requestRequiredFloat64Input(scanner *bufio.Scanner, label string) (float64, error) {
-	fmt.Printf("%s: ", label)
+func requestRequiredFloat64Input(writer io.Writer, scanner *bufio.Scanner, label string) (float64, error) {
+	fmt.Fprintf(writer, "%s: ", label)
 	scanner.Scan()
 	inputText := scanner.Text()
 
@@ -49,18 +54,18 @@ func requestRequiredFloat64Input(scanner *bufio.Scanner, label string) (float64,
 }
 
 type ShapeFromScannerBuilder interface {
-	build(scanner *bufio.Scanner) (geometry.Shape, error)
+	build(writer io.Writer, scanner *bufio.Scanner) (geometry.Shape, error)
 }
 
 type RectangleFromScannerBuilder struct {
 }
 
-func (r RectangleFromScannerBuilder) build(scanner *bufio.Scanner) (geometry.Shape, error) {
-	width, err := requestRequiredFloat64Input(scanner, "Width")
+func (r RectangleFromScannerBuilder) build(writer io.Writer, scanner *bufio.Scanner) (geometry.Shape, error) {
+	width, err := requestRequiredFloat64Input(writer, scanner, "Width")
 	if err != nil {
 		return nil, err
 	}
-	height, err := requestRequiredFloat64Input(scanner, "Height")
+	height, err := requestRequiredFloat64Input(writer, scanner, "Height")
 	if err != nil {
 		return nil, err
 	}
@@ -70,12 +75,12 @@ func (r RectangleFromScannerBuilder) build(scanner *bufio.Scanner) (geometry.Sha
 type TriangleFromScannerBuilder struct {
 }
 
-func (r TriangleFromScannerBuilder) build(scanner *bufio.Scanner) (geometry.Shape, error) {
-	base, err := requestRequiredFloat64Input(scanner, "Base")
+func (r TriangleFromScannerBuilder) build(writer io.Writer, scanner *bufio.Scanner) (geometry.Shape, error) {
+	base, err := requestRequiredFloat64Input(writer, scanner, "Base")
 	if err != nil {
 		return nil, err
 	}
-	height, err := requestRequiredFloat64Input(scanner, "Height")
+	height, err := requestRequiredFloat64Input(writer, scanner, "Height")
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +90,8 @@ func (r TriangleFromScannerBuilder) build(scanner *bufio.Scanner) (geometry.Shap
 type CircleFromScannerBuilder struct {
 }
 
-func (r CircleFromScannerBuilder) build(scanner *bufio.Scanner) (geometry.Shape, error) {
-	radius, err := requestRequiredFloat64Input(scanner, "Radius")
+func (r CircleFromScannerBuilder) build(writer io.Writer, scanner *bufio.Scanner) (geometry.Shape, error) {
+	radius, err := requestRequiredFloat64Input(writer, scanner, "Radius")
 	if err != nil {
 		return nil, err
 	}
